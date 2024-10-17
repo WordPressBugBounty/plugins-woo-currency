@@ -536,6 +536,8 @@ class currencyWcu extends moduleWcu {
 			$this->setCurrentCurrency($this->defaultCurrency, true);
 		} else if ($this->detectRobot()) {
 			$this->setCurrentCurrency($this->defaultCurrency, true);
+		} else if(!$this->convertByCheckout && isset($_GET['wc-ajax']) && $_GET['wc-ajax'] == 'ppc-create-order') {
+			$this->setCurrentCurrency($this->defaultCurrency, true);
 		}
 		return $this->currentCurrency;
 	}
