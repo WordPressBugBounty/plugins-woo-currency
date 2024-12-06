@@ -296,7 +296,7 @@ class currencyWcu extends moduleWcu {
 		return $response;
 	}
 	public function calcLineSubtotal( $cart ) {
-		if (has_block('woocommerce/cart')) {
+		if (has_block('woocommerce/cart') || has_block('woocommerce/checkout')) {
 			foreach ( $cart->get_cart() as $key => $cartItem ) {
 				if (!empty($cartItem['line_subtotal']) && !empty($cart->cart_contents[$key])) {
 					$cart->cart_contents[$key]['line_subtotal'] = $this->getModel()->getCurrencyPrice($cartItem['line_subtotal'], null);
@@ -305,7 +305,7 @@ class currencyWcu extends moduleWcu {
 		}
 	}
 	
-	public function getCurrencyPriceCart($price) {	
+	public function getCurrencyPriceCart($price) {
 		if (!empty($_GET['wc-ajax']) && ($_GET['wc-ajax'] == 'ppc-create-order')) {
 			$payload = file_get_contents( 'php://input' );
 			if ($payload) {
@@ -315,8 +315,8 @@ class currencyWcu extends moduleWcu {
 				}
 			}
 		}
-    	if (!has_block('woocommerce/cart')) {
-        	return $price;
+    	if (!has_block('woocommerce/cart') && !has_block('woocommerce/checkout')) {
+			return $price;
     	}
 		return $this->getModel()->getCurrencyPrice($price, null);
 	}
@@ -645,9 +645,9 @@ class currencyWcu extends moduleWcu {
 		return $this->getModel()->getCurrencyPrice($price, null);
 	}
 	public function getCurrencyPrice($price, $product = null) {
-      if (is_checkout_pay_page()) {
-         return $price;
-      }
+		if (is_checkout_pay_page()) {
+			return $price;
+		}
 		$tooltipModule = frameWcu::_()->getModule('currency_tooltip');
 		if ( isset($tooltipModule) ) {
 			$tooltipModule->addTooltipHiddenField($price);
