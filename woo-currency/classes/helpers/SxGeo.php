@@ -25,6 +25,13 @@ class SxGeo {
 	protected $m_idx_arr;
 	protected $m_idx_len;
 	protected $db_items;
+	protected $id_len;
+	protected $block_len;
+	protected $max_region;
+	protected $max_city;
+	protected $max_country;
+	protected $pack;
+	protected $b_idx_len;
 	protected $country_size;
 	protected $db;
 	protected $regions_db;

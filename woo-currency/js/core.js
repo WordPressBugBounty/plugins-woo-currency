@@ -389,3 +389,26 @@ function wcuUpdateUrlParam(param, value, url) {
 	window.location.search = jQuery.param(queryParameters);
 	window.sessionStorage.clear();
 }
+document.addEventListener('DOMContentLoaded', () => {
+	if (wp && wp.data) {
+		wp.data.subscribe(() => {
+			wcuReplaceShippingCost(100);
+		});
+		jQuery(document.body).on('click', '.wc-block-components-panel__button', function() {
+        	wcuReplaceShippingCost(0);
+			wcuReplaceShippingCost(100);
+    	});
+	}
+});
+function wcuReplaceShippingCost ( tt ) {
+	if (WCU_DATA.shippingCosts) {
+		setTimeout(function () {
+			for(var key in WCU_DATA.shippingCosts) {
+				var $input = jQuery('.wc-block-components-radio-control__input[value="'+key+'"]');
+				if ($input.length) {
+					$input.parent().find('.wc-block-formatted-money-amount').html(WCU_DATA.shippingCosts[key]);
+				}
+			}
+		}, tt);
+	}
+}

@@ -28,6 +28,7 @@ class currencyWcu extends moduleWcu {
 	
 	public $isYithProductAddon = false;
 	public $customCache = null;
+	public $shippingCosts = false;
 
 	public static $orderId = null;
 	public static $orderCurrency = null;
@@ -162,7 +163,6 @@ class currencyWcu extends moduleWcu {
 		
 		add_filter('woocommerce_hydration_dispatch_request', array($this, 'restApiRequest'), 9999, 4);
 	}
-	
 	public function enableYithAddonConverter() {
 		$this->isYithProductAddon = true;
 	}
@@ -287,7 +287,35 @@ class currencyWcu extends moduleWcu {
 		add_filter('woocommerce_get_price_including_tax', array($this, 'getCurrencyPriceCart'), 9999);
 		add_filter('woocommerce_cart_get_subtotal', array($this, 'getCurrencyPriceCart'), 9999);
 		add_filter('woocommerce_cart_get_total', array($this, 'getCurrencyPriceCart'), 9999);
+		add_filter('woocommerce_cart_get_shipping_total', array($this, 'getShippingTotal'), 9999);
+		add_filter('woocommerce_package_rates', array($this, 'calcShippingCosts'), 2);
 		add_action('woocommerce_calculate_totals', array($this, 'calcLineSubtotal'), 9999);
+		dispatcherWcu::addFilter('jsInitVariables', array($this, 'addShippingCosts'));
+	}
+	public function addShippingCosts($js) {
+		if (!empty($this->shippingCosts)) {
+			$js['shippingCosts'] = $this->shippingCosts;
+		}
+		return $js;
+	}
+	public function calcShippingCosts($methods) {
+		if (!has_block('woocommerce/cart') && !has_block('woocommerce/checkout')) {
+			return $methods;
+		}
+		$costs = array();
+		foreach ( $methods as $key => $method ) {
+			if (!empty($method->cost)) {
+				$costs[$key] = wc_price($method->cost);
+			}
+		}
+		$this->shippingCosts = $costs;
+		return $methods;
+	}
+	public function getShippingTotal($price) {
+		if (!has_block('woocommerce/cart') && !has_block('woocommerce/checkout') && !$this->isBlocksAPI()) {
+			return $price;
+    	}
+		return $this->getModel()->getCurrencyPrice($price, null);
 	}
 	public function restApiRequest($response, $request, $path, $handler) {
 		if ('/wc/store/v1/cart' == $path && has_block('woocommerce/cart')) {
@@ -295,8 +323,13 @@ class currencyWcu extends moduleWcu {
 		}
 		return $response;
 	}
+	public function isBlocksAPI(  ) {
+		$uri = empty($_SERVER['REQUEST_URI']) ? '' : sanitize_text_field($_SERVER['REQUEST_URI']);
+		return strpos( $uri, 'wp-json/wc/store/') && strpos( $uri, '/batch?');
+	}
 	public function calcLineSubtotal( $cart ) {
-		if (has_block('woocommerce/cart') || has_block('woocommerce/checkout')) {
+		if (has_block('woocommerce/cart') || has_block('woocommerce/checkout') || $this->isBlocksAPI()) {
+
 			foreach ( $cart->get_cart() as $key => $cartItem ) {
 				if (!empty($cartItem['line_subtotal']) && !empty($cart->cart_contents[$key])) {
 					$cart->cart_contents[$key]['line_subtotal'] = $this->getModel()->getCurrencyPrice($cartItem['line_subtotal'], null);
@@ -315,7 +348,7 @@ class currencyWcu extends moduleWcu {
 				}
 			}
 		}
-    	if (!has_block('woocommerce/cart') && !has_block('woocommerce/checkout')) {
+    	if (!has_block('woocommerce/cart') && !has_block('woocommerce/checkout') && !$this->isBlocksAPI()) {
 			return $price;
     	}
 		return $this->getModel()->getCurrencyPrice($price, null);
