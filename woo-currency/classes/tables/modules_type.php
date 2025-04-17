@@ -4,7 +4,7 @@ class tableModules_typeWcu extends tableWcu {
         $this->_table = '@__modules_type';
         $this->_id = 'id';     /*Let's associate it with posts*/
         $this->_alias = 'wcu_m_t';
-        $this->_addField($this->_id, 'text', 'int', '', __('ID', WCU_LANG_CODE))->
-                _addField('label', 'text', 'varchar', '', __('Label', WCU_LANG_CODE), 128);
+        $this->_addField($this->_id, 'text', 'int', '', 'ID')->
+                _addField('label', 'text', 'varchar', '', 'Label', 128);
     }
 }
