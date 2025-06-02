@@ -162,7 +162,14 @@ class currencyWcu extends moduleWcu {
 		add_filter('yith_wapo_option_price', array($this, 'resetYithAddonOptionPrice'), 9999, 1);
 		
 		add_filter('woocommerce_hydration_dispatch_request', array($this, 'restApiRequest'), 9999, 4);
+		//add_filter('woocommerce_coupon_validate_minimum_amount', array($this, 'validateCouponMinAmount'), 10, 3);
 	}
+	/*public function validateCouponMinAmount( $false, $coupon, $subtotal ) {
+		if ($false && $coupon->get_minimum_amount() > 0) {
+			return $this->getCurrencyPrice($coupon->get_minimum_amount()) > $subtotal;
+		}
+		return $false;
+	}*/
 	public function enableYithAddonConverter() {
 		$this->isYithProductAddon = true;
 	}
@@ -325,7 +332,7 @@ class currencyWcu extends moduleWcu {
 	}
 	public function isBlocksAPI(  ) {
 		$uri = empty($_SERVER['REQUEST_URI']) ? '' : sanitize_text_field($_SERVER['REQUEST_URI']);
-		return strpos( $uri, 'wp-json/wc/store/') && strpos( $uri, '/batch?');
+		return strpos( $uri, 'wp-json/wc/store/') && (strpos( $uri, '/batch?') || strpos( $uri, '/checkout?__experimental_calc_totals=true'));
 	}
 	public function calcLineSubtotal( $cart ) {
 		if (has_block('woocommerce/cart') || has_block('woocommerce/checkout') || $this->isBlocksAPI()) {

@@ -48,7 +48,7 @@
 	define('WCU_EOL', "\n");
 
     define('WCU_PLUGIN_INSTALLED', true);
-    define('WCU_VERSION', '2.1.5');
+    define('WCU_VERSION', '2.1.6');
 	define('WCU_DEV_VER', 1);
     define('WCU_USER', 'user');
 

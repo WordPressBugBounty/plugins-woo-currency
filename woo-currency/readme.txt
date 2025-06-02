@@ -1,14 +1,14 @@
-﻿  === WBW Currency Switcher for WooCommerce ===
+  === WBW Currency Switcher for WooCommerce ===
 Contributors: woobewoo
 Tags: currency switcher, WooCommerce currency switcher, multi currency, currency converter, currency, converter, WooCommerce
 Donate link: https://woobewoo.com/product/woo-currency/
 Tested up to: 6.8
-Stable tag: 2.1.5
+Stable tag: 2.1.6
  
 WBW Currency Switcher for WooCommerce allows customers to switch products prices to any currencies. Get rates converted in the real-time with dynamic currency switcher
 
 == Description ==
-[WBW Currency Switcher for WooCommerce Plugin](https://woobewoo.com/plugins/woo-currency?utm_source=wordpress&utm_medium=description&utm_campaign=currency "WBW Currency Switcher for WooCommerce WordPress plugin") allows you to display prices in multiple currencies, use the unlimited number of currencies and set the exchange rate for each currency manually or automatically. The plugin makes full use of Cryptocompare and Free Converter platforms, providing the latest exchange rates, and converting displayed prices in real-time. Currency can be changed automatically according to the customer’s IP.
+[WBW Currency Switcher for WooCommerce Plugin](https://woobewoo.com/plugins/woo-currency?utm_source=wordpress&utm_medium=description&utm_campaign=currency "WBW Currency Switcher for WooCommerce WordPress plugin") allows you to display prices in multiple currencies, use the unlimited number of currencies and set the exchange rate for each currency manually or automatically. The plugin makes full use of Cryptocompare and Free Converter platforms, providing the latest exchange rates, and converting displayed prices in real-time. Currency switcher can be changed automatically according to the customer’s IP.
 
 You can use Currency Switcher with additional modules - [Currency Rates, Converter and Tooltip modes](https://woobewoo.com/feature/rates-converter-tooltip-modes/ "Rates, converter, tooltip modes"). This will give your customers the opportunity to pay with their preferred currency, thus increasing shop sales. The best currency switcher to make an online store working with different currencies!
 
@@ -144,6 +144,11 @@ The plugin uses the Cryptocompare and Free Converter platforms which are providi
 
 == Changelog ==
 
+= 2.1.6 =
+ * Fixed switcher with GEOIP
+ * Fixed Checkout Blocks
+
+ 
 = 2.1.5 =
  * Fixed link View details
  * Minor code fix
