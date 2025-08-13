@@ -1,12 +1,77 @@
 <?php
+/**
+ * WBW Currency Switcher for WooCommerce - promoViewWcu Class
+ *
+ * @version 2.2.0
+ *
+ * @author  woobewoo
+ */
+
+defined( 'ABSPATH' ) || exit;
+
 class promoViewWcu extends viewWcu {
-    public function displayAdminFooter() {
+
+	/**
+	 * pluginSlug.
+	 *
+	 * @version 2.2.0
+	 * @since   2.2.0
+	 */
+	public $pluginSlug;
+
+	/**
+	 * mainLink.
+	 *
+	 * @version 2.2.0
+	 * @since   2.2.0
+	 */
+	public $mainLink;
+
+	/**
+	 * faqList.
+	 *
+	 * @version 2.2.0
+	 * @since   2.2.0
+	 */
+	public $faqList;
+
+	/**
+	 * serverSettings.
+	 *
+	 * @version 2.2.0
+	 * @since   2.2.0
+	 */
+	public $serverSettings;
+
+	/**
+	 * news.
+	 *
+	 * @version 2.2.0
+	 * @since   2.2.0
+	 */
+	public $news;
+
+	/**
+	 * contactFields.
+	 *
+	 * @version 2.2.0
+	 * @since   2.2.0
+	 */
+	public $contactFields;
+
+	/**
+	 * displayAdminFooter.
+	 */
+	public function displayAdminFooter() {
 		$this->assign('pluginSlug', frameWcu::_()->getModule('adminmenu')->getMainSlug());
-        parent::display('adminFooter');
-    }
+		parent::display('adminFooter');
+	}
+
+	/**
+	 * getOverviewTabContent.
+	 */
 	public function getOverviewTabContent() {
 		frameWcu::_()->getModule('templates')->loadJqueryUi();
-		
 		frameWcu::_()->getModule('templates')->loadSlimscroll();
 		frameWcu::_()->addScript('admin.overview', $this->getModule()->getModPath(). 'js/admin.overview.js');
 		frameWcu::_()->addStyle('admin.overview', $this->getModule()->getModPath(). 'css/admin.overview.css');
@@ -17,48 +82,53 @@ class promoViewWcu extends viewWcu {
 		$this->assign('contactFields', $this->getModule()->getContactFormFields());
 		return parent::getContent('overviewTabContent');
 	}
+
+	/**
+	 * getFaqList.
+	 */
 	public function getFaqList() {
 		return array();
 	}
+
+	/**
+	 * getMostFaqList.
+	 */
 	public function getMostFaqList() {
 		return array();
 	}
+
+	/**
+	 * getNewsContent.
+	 */
 	public function getNewsContent() {
 		return '';
-		/*$getData = wp_remote_get('http://woobewoo.com/news/main.html');
-		$content = '';
-		if($getData 
-			&& is_array($getData) 
-			&& isset($getData['response']) 
-			&& isset($getData['response']['code']) 
-			&& $getData['response']['code'] == 200
-			&& isset($getData['body'])
-			&& !empty($getData['body'])
-		) {
-			$content = $getData['body'];
-		} else {
-			$content = sprintf(__('There were some problems while trying to retrieve our news, but you can always check all list <a target="_blank" href="%s">here</a>.', WCU_LANG_CODE), 'http://woobewoo.com/news');
-		}
-		return $content;*/
 	}
+
+	/**
+	 * getServerSettings.
+	 */
 	public function getServerSettings() {
 		global $wpdb;
 		return array(
 			'Operating System' => array('value' => PHP_OS),
-            'PHP Version' => array('value' => PHP_VERSION),
-            'Server Software' => array('value' => $_SERVER['SERVER_SOFTWARE']),
+			'PHP Version' => array('value' => PHP_VERSION),
+			'Server Software' => array('value' => $_SERVER['SERVER_SOFTWARE']),
 			'MySQL' => array('value' =>  $wpdb->db_version()),
-            'PHP Allow URL Fopen' => array('value' => ini_get('allow_url_fopen') ? __('Yes', WCU_LANG_CODE) : __('No', WCU_LANG_CODE)),
-            'PHP Memory Limit' => array('value' => ini_get('memory_limit')),
-            'PHP Max Post Size' => array('value' => ini_get('post_max_size')),
-            'PHP Max Upload Filesize' => array('value' => ini_get('upload_max_filesize')),
-            'PHP Max Script Execute Time' => array('value' => ini_get('max_execution_time')),
-            'PHP EXIF Support' => array('value' => extension_loaded('exif') ? __('Yes', WCU_LANG_CODE) : __('No', WCU_LANG_CODE)),
-            'PHP EXIF Version' => array('value' => phpversion('exif')),
-            'PHP XML Support' => array('value' => extension_loaded('libxml') ? __('Yes', WCU_LANG_CODE) : __('No', WCU_LANG_CODE), 'error' => !extension_loaded('libxml')),
-            'PHP CURL Support' => array('value' => extension_loaded('curl') ? __('Yes', WCU_LANG_CODE) : __('No', WCU_LANG_CODE), 'error' => !extension_loaded('curl')),
+			'PHP Allow URL Fopen' => array('value' => ini_get('allow_url_fopen') ? __('Yes', WCU_LANG_CODE) : __('No', WCU_LANG_CODE)),
+			'PHP Memory Limit' => array('value' => ini_get('memory_limit')),
+			'PHP Max Post Size' => array('value' => ini_get('post_max_size')),
+			'PHP Max Upload Filesize' => array('value' => ini_get('upload_max_filesize')),
+			'PHP Max Script Execute Time' => array('value' => ini_get('max_execution_time')),
+			'PHP EXIF Support' => array('value' => extension_loaded('exif') ? __('Yes', WCU_LANG_CODE) : __('No', WCU_LANG_CODE)),
+			'PHP EXIF Version' => array('value' => phpversion('exif')),
+			'PHP XML Support' => array('value' => extension_loaded('libxml') ? __('Yes', WCU_LANG_CODE) : __('No', WCU_LANG_CODE), 'error' => !extension_loaded('libxml')),
+			'PHP CURL Support' => array('value' => extension_loaded('curl') ? __('Yes', WCU_LANG_CODE) : __('No', WCU_LANG_CODE), 'error' => !extension_loaded('curl')),
 		);
 	}
+
+	/**
+	 * showWelcomePage.
+	 */
 	public function showWelcomePage() {
 		frameWcu::_()->getModule('templates')->loadJqueryUi();
 		frameWcu::_()->addStyle('sup.bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css');
@@ -70,15 +140,28 @@ class promoViewWcu extends viewWcu {
 		$this->assign('mainLink', $this->getModule()->getMainLink());
 		parent::display('welcomePage');
 	}
+
+	/**
+	 * _makeWelcomeLink.
+	 */
 	private function _makeWelcomeLink($link) {
 		return uriWcu::_(array('baseUrl' => $link, 'from' => 'welcome-page', 'pl' => WCU_CODE));
 	}
+
+	/**
+	 * getTourHtml.
+	 */
 	public function getTourHtml() {
 		$this->assign('contactFormLink', $this->getModule()->getContactLink());
 		$this->assign('finishSiteLink', $this->getModule()->generateMainLink('utm_source=plugin&utm_medium=final_step_b_step&utm_campaign=woocurrency'));
 		return parent::getContent('adminTour');
 	}
+
+	/**
+	 * getPluginDeactivation.
+	 */
 	public function getPluginDeactivation() {
 		return parent::getContent('pluginDeactivation');
 	}
+
 }

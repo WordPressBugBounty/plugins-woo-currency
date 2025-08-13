@@ -1,7 +1,131 @@
 <?php
+/**
+ * WBW Currency Switcher for WooCommerce - currencyViewWcu Class
+ *
+ * @version 2.2.0
+ *
+ * @author  woobewoo
+ */
+
+defined( 'ABSPATH' ) || exit;
 
 class currencyViewWcu extends viewWcu {
 
+	/**
+	 * flagsModule.
+	 *
+	 * @version 2.2.0
+	 * @since   2.2.0
+	 */
+	public $flagsModule;
+
+	/**
+	 * optionsProModule.
+	 *
+	 * @version 2.2.0
+	 * @since   2.2.0
+	 */
+	public $optionsProModule;
+
+	/**
+	 * curDbOpt.
+	 *
+	 * @version 2.2.0
+	 * @since   2.2.0
+	 */
+	public $curDbOpt;
+
+	/**
+	 * optDbOpt.
+	 *
+	 * @version 2.2.0
+	 * @since   2.2.0
+	 */
+	public $optDbOpt;
+
+	/**
+	 * currencies.
+	 *
+	 * @version 2.2.0
+	 * @since   2.2.0
+	 */
+	public $currencies;
+
+	/**
+	 * optionsParams.
+	 *
+	 * @version 2.2.0
+	 * @since   2.2.0
+	 */
+	public $optionsParams;
+
+	/**
+	 * dbPrefix.
+	 *
+	 * @version 2.2.0
+	 * @since   2.2.0
+	 */
+	public $dbPrefix;
+
+	/**
+	 * defCur.
+	 *
+	 * @version 2.2.0
+	 * @since   2.2.0
+	 */
+	public $defCur;
+
+	/**
+	 * defPos.
+	 *
+	 * @version 2.2.0
+	 * @since   2.2.0
+	 */
+	public $defPos;
+
+	/**
+	 * customSymbolsModule.
+	 *
+	 * @version 2.2.0
+	 * @since   2.2.0
+	 */
+	public $customSymbolsModule;
+
+	/**
+	 * modulePath.
+	 *
+	 * @version 2.2.0
+	 * @since   2.2.0
+	 */
+	public $modulePath;
+
+	/**
+	 * pluginLink.
+	 *
+	 * @version 2.2.0
+	 * @since   2.2.0
+	 */
+	public $pluginLink;
+
+	/**
+	 * moduleName.
+	 *
+	 * @version 2.2.0
+	 * @since   2.2.0
+	 */
+	public $moduleName;
+
+	/**
+	 * moduleIsPro.
+	 *
+	 * @version 2.2.0
+	 * @since   2.2.0
+	 */
+	public $moduleIsPro;
+
+	/**
+	 * getCurrencyTabContent.
+	 */
 	public function getCurrencyTabContent() {
 
 		$module = $this->getModule();
@@ -24,7 +148,7 @@ class currencyViewWcu extends viewWcu {
 		if($optionsProModule){
 			$this->assign('optionsProModule', $optionsProModule);
 		}
-		
+
 		$currencies = array_merge(array(array()), $currencies);
 		frameWcu::_()->getModule('templates')->loadBootstrapSimple();
 		frameWcu::_()->getModule('templates')->loadFontAwesome();
@@ -47,10 +171,13 @@ class currencyViewWcu extends viewWcu {
 		$this->assign('customSymbolsModule', $customSymbolsModule);
 		$this->assign('modulePath', $module->getModPath() );
 		$this->assign('pluginLink', frameWcu::_()->getModule('promo')->getMainLink() );
-		
+
 		parent::display('currencyTabContent');
 	}
 
+	/**
+	 * getChildrenOneTab.
+	 */
 	public function getChildrenOneTab($array) {
 		$module = $this->getModule();
 		$model = $this->getModel();
@@ -67,6 +194,9 @@ class currencyViewWcu extends viewWcu {
 		parent::display('childrenOneTab');
 	}
 
+	/**
+	 * getChildrenMultipleTab.
+	 */
 	public function getChildrenMultipleTab($array) {
 		$module = $this->getModule();
 		$model = $this->getModel();
@@ -86,6 +216,9 @@ class currencyViewWcu extends viewWcu {
 		parent::display('childrenMultipleTab');
 	}
 
+	/**
+	 * _prepareOptionsParams.
+	 */
 	public function _prepareOptionsParams($options, $defOptions) {
 		$optionsParams = $this->getModule()->getOptionsParams();
 
@@ -119,6 +252,9 @@ class currencyViewWcu extends viewWcu {
 		return $optionsParams;
 	}
 
+	/**
+	 * isDisplayElem.
+	 */
 	function isDisplayElem($value, $params) {
 		$display = '';
 		$showArr = array_filter(explode(',', str_replace('all', '', !empty($params['row_show']) ? $params['row_show'] : '')));
