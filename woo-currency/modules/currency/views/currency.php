@@ -2,7 +2,7 @@
 /**
  * WBW Currency Switcher for WooCommerce - currencyViewWcu Class
  *
- * @version 2.2.0
+ * @version 2.2.1
  *
  * @author  woobewoo
  */
@@ -10,6 +10,22 @@
 defined( 'ABSPATH' ) || exit;
 
 class currencyViewWcu extends viewWcu {
+
+	/**
+	 * moduleTab.
+	 *
+	 * @version 2.2.1
+	 * @since   2.2.1
+	 */
+	public $moduleTab;
+
+	/**
+	 * showPreviewAjax.
+	 *
+	 * @version 2.2.1
+	 * @since   2.2.1
+	 */
+	public $showPreviewAjax;
 
 	/**
 	 * flagsModule.
@@ -128,9 +144,9 @@ class currencyViewWcu extends viewWcu {
 	 */
 	public function getCurrencyTabContent() {
 
-		$module = $this->getModule();
-		$model = $this->getModel();
-		$options = $model->getOptions();
+		$module     = $this->getModule();
+		$model      = $this->getModel();
+		$options    = $model->getOptions();
 		$defOptions = $module->getDefaultOptions();
 		$currencies = $model->getCurrencies();
 
@@ -179,10 +195,14 @@ class currencyViewWcu extends viewWcu {
 	 * getChildrenOneTab.
 	 */
 	public function getChildrenOneTab($array) {
-		$module = $this->getModule();
-		$model = $this->getModel();
+		$module      = $this->getModule();
+		$model       = $this->getModel();
 		$moduleIsPro = !empty($array[1]) ? $array[1] : false;
-		if (!empty($moduleIsPro) && $moduleIsPro && frameWcu::_()->getModule('options_pro')) {
+		if (
+			!empty($moduleIsPro) &&
+			$moduleIsPro &&
+			frameWcu::_()->getModule('options_pro')
+		) {
 			$options = frameWcu::_()->getModule('options_pro')->getModel()->getOptionsPro();
 		} else {
 			$options = $model->getOptions();
@@ -198,11 +218,14 @@ class currencyViewWcu extends viewWcu {
 	 * getChildrenMultipleTab.
 	 */
 	public function getChildrenMultipleTab($array) {
-		$module = $this->getModule();
-		$model = $this->getModel();
-		$moduleIsPro = !empty($array[2]) ? $array[2] : false;
+		$module          = $this->getModule();
+		$model           = $this->getModel();
+		$moduleIsPro     = !empty($array[2]) ? $array[2] : false;
 		$showPreviewAjax = !empty($array[3]) ? $array[3] : false;
-		if ($moduleIsPro && frameWcu::_()->getModule('options_pro')) {
+		if (
+			$moduleIsPro &&
+			frameWcu::_()->getModule('options_pro')
+		) {
 			$options = frameWcu::_()->getModule('options_pro')->getModel()->getOptionsPro();
 		} else {
 			$options = $model->getOptions();
@@ -218,12 +241,17 @@ class currencyViewWcu extends viewWcu {
 
 	/**
 	 * _prepareOptionsParams.
+	 *
+	 * @version 2.2.1
 	 */
 	public function _prepareOptionsParams($options, $defOptions) {
 		$optionsParams = $this->getModule()->getOptionsParams();
 
 		$indexTabWithChildrenOptionsArr = array (
-			'currency_switcher', 'currency_tooltip', 'currency_rates', 'currency_converter',
+			'currency_switcher',
+			'currency_tooltip',
+			'currency_rates',
+			'currency_converter',
 		);
 
 		foreach($optionsParams as $indexTab => &$optBlock) {
@@ -232,18 +260,28 @@ class currencyViewWcu extends viewWcu {
 					foreach ($optTab as $key => &$opt) {
 
 						if ( $opt['html'] === 'selectlistsortable' ) {
-							$opt['params']['options'] =  isset($options[$indexTab][$indexTabSubOpt][$key]) && is_array($options[$indexTab][$indexTabSubOpt][$key]) ? array_replace(array_flip($options[$indexTab][$indexTabSubOpt][$key]), $opt['params']['options']) : $opt['params']['options'] ;
+							$opt['params']['options'] = (
+								(
+									isset($options[$indexTab][$indexTabSubOpt][$key]) &&
+									is_array($options[$indexTab][$indexTabSubOpt][$key])
+								) ?
+								array_replace(
+									array_flip($options[$indexTab][$indexTabSubOpt][$key]),
+									$opt['params']['options']
+								) :
+								$opt['params']['options']
+							);
 						}
 
-						$opt['params'] = isset($opt['params']) ? $opt['params'] : array();
-						$opt['params']['value'] = isset($options[$indexTab][$indexTabSubOpt][$key]) ? $options[$indexTab][$indexTabSubOpt][$key] : $defOptions[$indexTab][$indexTabSubOpt][$key];
+						$opt['params']          = $opt['params'] ?? array();
+						$opt['params']['value'] = $options[$indexTab][$indexTabSubOpt][$key] ?? $defOptions[$indexTab][$indexTabSubOpt][$key];
 					}
 				}
 			} else {
 				foreach($optBlock as $key => &$opt) {
-					$opt['params'] = isset($opt['params']) ? $opt['params'] : array();
-					$defOptions[$indexTab][$key] = isset($defOptions[$indexTab][$key]) ? $defOptions[$indexTab][$key] : '';
-					$opt['params']['value'] = isset($options[$indexTab][$key]) ? $options[$indexTab][$key] : $defOptions[$indexTab][$key];
+					$opt['params']               = $opt['params'] ?? array();
+					$defOptions[$indexTab][$key] = $defOptions[$indexTab][$key] ?? '';
+					$opt['params']['value']      = $options[$indexTab][$key] ?? $defOptions[$indexTab][$key];
 				}
 			}
 
