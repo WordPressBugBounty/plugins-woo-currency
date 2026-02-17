@@ -1,7 +1,27 @@
 <?php
+/**
+ * WBW Currency Switcher for WooCommerce - currencyControllerWcu Class
+ *
+ * @version 2.2.6
+ *
+ * @author  woobewoo
+ */
+
+defined( 'ABSPATH' ) || exit;
+
 class currencyControllerWcu extends controllerWcu {
 
+	/**
+	 * saveCurrencyTab.
+	 *
+	 * @version 2.2.6
+	 */
 	public function saveCurrencyTab() {
+		if (!current_user_can(frameWcu::_()->getModule('adminmenu')->getMainCap())) {
+			wp_send_json_error(__('You are not allowed to perform this action.', 'woo-currency'));
+		}
+		check_ajax_referer('wbw_currency_nonce', '_wbw_currency_nonce');
+
 		$res = new responseWcu();
 		$module = $this->getModule();
 		$currencies = reqWcu::getVar($module->currencyDbOpt);
@@ -10,7 +30,7 @@ class currencyControllerWcu extends controllerWcu {
 		$this->getModel()->saveCurrencies($currencies);
 
 		$customSymbolsModule = frameWcu::_()->getModule('custom_symbols');
-		if($customSymbolsModule){
+		if ($customSymbolsModule) {
 			$currenciesSymbols = reqWcu::getVar($customSymbolsModule->currencyDbOptSymbols);
 			$customSymbolsModule->getModel('custom_symbols')->saveCurrenciesSymbols($currenciesSymbols);
 		}
@@ -29,6 +49,9 @@ class currencyControllerWcu extends controllerWcu {
 		return $res->ajaxExec();
 	}
 
+	/**
+	 * saveCurrenciesList.
+	 */
 	public function saveCurrenciesList() {
 		$res = new responseWcu();
 
@@ -39,6 +62,9 @@ class currencyControllerWcu extends controllerWcu {
 		return $res->ajaxExec();
 	}
 
+	/**
+	 * getCurrencyRate.
+	 */
 	public function getCurrencyRate() {
 
 		$res = new responseWcu();
@@ -46,15 +72,18 @@ class currencyControllerWcu extends controllerWcu {
 		$toCurrency = reqWcu::getVar('currency_name');
 		$rate = $this->getModel()->getCurrencyRate($fromCurrency, $toCurrency);
 
-		if($rate) {
+		if ($rate) {
 			$res->addMessage(__('Done', WCU_LANG_CODE));
 			$res->addData('rate', $rate);
 		} else {
-			$res->pushError( $this->getModel()->getErrors() );
+			$res->pushError($this->getModel()->getErrors());
 		}
 		return $res->ajaxExec();
 	}
 
+	/**
+	 * getPermissions.
+	 */
 	public function getPermissions() {
 		return array(
 			WCU_USERLEVELS => array(
@@ -62,6 +91,5 @@ class currencyControllerWcu extends controllerWcu {
 			),
 		);
 	}
-
 
 }
