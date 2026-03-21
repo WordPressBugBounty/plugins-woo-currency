@@ -1,3 +1,11 @@
+/**
+ * WBW Currency Switcher for WooCommerce - Admin Options JS
+ *
+ * @version 2.2.7
+ *
+ * @author  woobewoo
+ */
+
 var wcuAdminFormChanged = [];
 var g_wcuChosenOptions = {
 	width: '100%',
@@ -6,11 +14,23 @@ var g_wcuChosenOptions = {
 	enable_split_word_search: true,
 	placeholder_text_multiple: 'select options',
 };
-window.onbeforeunload = function(){
-	// If there are at lease one unsaved form - show message for confirnation for page leave
-	if(wcuAdminFormChanged.length)
-		return 'Some changes were not-saved. Are you sure you want to leave?';
-};
+/**
+ * beforeunload event handler.
+ *
+ * @version 2.2.7
+ */
+window.addEventListener('beforeunload', function (e) {
+	window.onbeforeunload = null;
+	if (!wcuAdminFormChanged.length) return;
+	e.preventDefault();
+
+	return true;
+});
+/**
+ * Jquery ready function
+ *
+ * @version 2.2.7
+ */
 jQuery(document).ready(function(){
 	wcuInitMainPromoPopup();
 
@@ -38,8 +58,8 @@ jQuery(document).ready(function(){
 
 	// Timeout - is to count only user changes, because some changes can be done auto when form is loaded
 	setTimeout(function() {
-		// If some changes was made in those forms and they were not saved - show message for confirnation before page reload
-		var formsPreventLeave = [];
+		// If some changes was made in those forms and they were not saved - show message for confirmation before page reload
+		var formsPreventLeave = ['mainform'];
 		if(formsPreventLeave && formsPreventLeave.length) {
 			jQuery('#'+ formsPreventLeave.join(', #')).find('input,select').change(function(){
 				var formId = jQuery(this).parents('form:first').attr('id');
@@ -69,7 +89,6 @@ jQuery(document).ready(function(){
 		}).trigger('change');
 	}
 	wcuInitCustomCheckRadio();
-	//wcuInitCustomSelect();
 
 	jQuery('.wcuFieldsetToggled').each(function(){
 		var self = this;
@@ -90,34 +109,9 @@ jQuery(document).ready(function(){
 			return false;
 		});
 	});
-	// Tooltipster initialization
-	/*var tooltipsterSettings = {
-		contentAsHTML: true
-	,	interactive: true
-	,	speed: 0
-	,	delay: 0
-	//,	animation: 'swing'
-	,	maxWidth: 450
-	};
-	if(jQuery('.woobewoo-tooltip').length) {
-		tooltipsterSettings.position = 'top-left';
-		jQuery('.woobewoo-tooltip').tooltipster( tooltipsterSettings );
-	}
-	if(jQuery('.woobewoo-tooltip-bottom').length) {
-		tooltipsterSettings.position = 'bottom-left';
-		jQuery('.woobewoo-tooltip-bottom').tooltipster( tooltipsterSettings );
-	}
-	if(jQuery('.woobewoo-tooltip-left').length) {
-		tooltipsterSettings.position = 'left';
-		jQuery('.woobewoo-tooltip-left').tooltipster( tooltipsterSettings );
-	}
-	if(jQuery('.woobewoo-tooltip-right').length) {
-		tooltipsterSettings.position = 'right';
-		jQuery('.woobewoo-tooltip-right').tooltipster( tooltipsterSettings );
-	}*/
 	wcuInitTooltips();
 	if(jQuery('.wcuCopyTextCode').length) {
-		setTimeout(function(){	// Give it some time - wait until all other elements will be initialized
+		setTimeout(function(){ // Give it some time - wait until all other elements will be initialized
 			var cloneWidthElement =  jQuery('<span class="sup-shortcode" />').appendTo('.woobewoo-plugin');
 			jQuery('.wcuCopyTextCode').attr('readonly', 'readonly').click(function(){
 				this.setSelectionRange(0, this.value.length);
@@ -140,7 +134,7 @@ jQuery(document).ready(function(){
 		}, 500);
 	}
 	// Check for showing review notice after a week usage
-    wcuInitPlugNotices();
+	wcuInitPlugNotices();
 	jQuery(".woobewoo-plugin .tooltipstered").removeAttr("title");
 });
 function wcuInitTooltips( selector ) {
@@ -149,7 +143,6 @@ function wcuInitTooltips( selector ) {
 	,	interactive: true
 	,	speed: 0
 	,	delay: 0
-	//,	animation: 'swing'
 	,	maxWidth: 450
 	}
 	,	findPos = {
@@ -189,7 +182,7 @@ function checkAdminFormSaved() {
 		if(!confirm(toeLangWcu('Some changes were not-saved. Are you sure you want to leave?'))) {
 			return false;
 		}
-		wcuAdminFormChanged = [];	// Clear unsaved forms array - if user wanted to do this
+		wcuAdminFormChanged = []; // Clear unsaved forms array - if user wanted to do this
 	}
 	return true;
 }
@@ -350,7 +343,7 @@ function wcuInitPlugNotices() {
 			jQuery(this).find('.notice-dismiss').click(function(){
 				var $notice = jQuery(this).parents('.woobewoo-admin-notice');
 				if(!$notice.data('stats-sent')) {
-					// User closed this message - that is his choise, let's respect this and save it's saved status
+					// User closed this message - that is his choice, let's respect this and save it's saved status
 					jQuery.sendFormWcu({
 						data: {mod: 'promo', action: 'addNoticeAction', code: $notice.data('code'), choice: 'hide'}
 					});
@@ -460,8 +453,8 @@ function resizePreview() {
 /*Some items should be always on users screen*/
 function InitStickyItem() {
 	jQuery(window).scroll(function(){
-		var stickiItemsSelectors = [/*'.ui-jqgrid-hdiv', */'.supsystic-sticky']
-		,	elementsUsePaddingNext = [/*'.ui-jqgrid-hdiv', */'.supsystic-bar']	// For example - if we stick row - then all other should not offest to top after we will place element as fixed
+		var stickiItemsSelectors = ['.supsystic-sticky']
+		,	elementsUsePaddingNext = ['.supsystic-bar'] // For example - if we stick row - then all other should not offset to top after we will place element as fixed
 		,	wpTollbarHeight = 32
 		,	wndScrollTop = jQuery(window).scrollTop() + wpTollbarHeight
 		,	footer = jQuery('.wcuAdminFooterShell')
@@ -469,9 +462,6 @@ function InitStickyItem() {
 		,	docHeight = jQuery(document).height()
 		,	wasSticking = false
 		,	wasUnSticking = false;
-		/*if(jQuery('#wpbody-content .update-nag').length) {	// Not used for now
-			wpTollbarHeight += parseInt(jQuery('#wpbody-content .update-nag').outerHeight());
-		}*/
 
 		for(var i = 0; i < stickiItemsSelectors.length; i++) {
 			jQuery(stickiItemsSelectors[ i ]).each(function(){
@@ -510,7 +500,6 @@ function InitStickyItem() {
 							element.addClass('sticky-full-width');
 						}
 						if(useNextElementPadding) {
-							//element.addClass('supsystic-sticky-active-bordered');
 							nextElement = element.next();
 							if(nextElement && nextElement.length) {
 								nextElement.data('prevPaddingTop', nextElement.css('padding-top'));
@@ -523,7 +512,7 @@ function InitStickyItem() {
 						}
 						wasSticking = true;
 						element.trigger('startSticky');
-					} else if(!isNaN(prevScrollMinPos) && currentScrollTop <= prevScrollMinPos) {	// Stop sticking
+					} else if(!isNaN(prevScrollMinPos) && currentScrollTop <= prevScrollMinPos) { // Stop sticking
 						// because of this action some map tabs (shapes and heatmap) are jump up during scroll.
 						element.removeClass('supsystic-sticky-active').data('scrollMinPos', 0).css({
 							'top': 0
@@ -532,7 +521,6 @@ function InitStickyItem() {
 							element.removeClass('sticky-full-width');
 						}
 						if(useNextElementPadding) {
-							//element.removeClass('supsystic-sticky-active-bordered');
 							nextElement = element.next();
 							if(nextElement && nextElement.length) {
 								var nextPrevPaddingTop = parseInt(nextElement.data('prevPaddingTop'));
@@ -545,7 +533,7 @@ function InitStickyItem() {
 						}
 						element.trigger('stopSticky');
 						wasUnSticking = true;
-					} else {	// Check new stick position
+					} else { // Check new stick position
 						if(element.hasClass('supsystic-sticky-active')) {
 							if(footerHeight) {
 								var elementHeight = element.height()
@@ -568,117 +556,110 @@ function InitStickyItem() {
 				}
 			});
 		}
-		// if(wasSticking) {
-		// 	if(jQuery('#wcuPreviewStickyBar').size())
-		// 		jQuery('#wcuPreviewStickyBar').show();
-		// } else if(wasUnSticking) {
-		// 	if(jQuery('#wcuPreviewStickyBar').size())
-		// 		jQuery('#wcuPreviewStickyBar').hide();
-		// }
 	});
 }
-			function wcuSelectMultipleSortableFunction(originalSelectId) {
+function wcuSelectMultipleSortableFunction(originalSelectId) {
 
-			var pseudoSelectClass = originalSelectId+'Pseudo';
-			var pseudoSelectDiv = pseudoSelectClass+'Div';
+	var pseudoSelectClass = originalSelectId+'Pseudo';
+	var pseudoSelectDiv = pseudoSelectClass+'Div';
 
-			pseudoSelectClass = pseudoSelectClass.toString();
-			pseudoSelectDiv = pseudoSelectDiv.toString();
+	pseudoSelectClass = pseudoSelectClass.toString();
+	pseudoSelectDiv = pseudoSelectDiv.toString();
 
-			var select = jQuery("#"+originalSelectId+"");
-			var name = jQuery("#"+originalSelectId+"").attr("name");
+	var select = jQuery("#"+originalSelectId+"");
+	var name = jQuery("#"+originalSelectId+"").attr("name");
 
-			var pseudoSelect = jQuery("<div class='"+pseudoSelectClass+" wcuSelectMultipleSortableWrapper' data-name='"+name+"'></div>");
+	var pseudoSelect = jQuery("<div class='"+pseudoSelectClass+" wcuSelectMultipleSortableWrapper' data-name='"+name+"'></div>");
 
-			jQuery("#"+originalSelectId+"").hide();
-			pseudoSelect.insertBefore(select);
+	jQuery("#"+originalSelectId+"").hide();
+	pseudoSelect.insertBefore(select);
 
-			select.find("option").each(function(e){
-				var html = jQuery(this).text();
-				var val = jQuery(this).val();
-				if (jQuery.isNumeric(html)) {
-					jQuery(this).remove();
-					return true;
+	select.find("option").each(function(e){
+		var html = jQuery(this).text();
+		var val = jQuery(this).val();
+		if (jQuery.isNumeric(html)) {
+			jQuery(this).remove();
+			return true;
+		}
+		var selected = jQuery(this).prop("selected");
+		if (selected) {selected = 'checked';}
+		var option = jQuery("<div align='center' class='"+pseudoSelectDiv+" wcuSelectMultipleSortableDiv' data-value='"+val+"' data-text='"+html+"'><i class='fa fa-arrows-h' style='font-size: 20px; margin-top:5px;'></i><br><input class='"+pseudoSelectDiv+"Checkbox' "+ selected +" type='checkbox'>"+html+"</div>")
+
+		pseudoSelect.append(option);
+	});
+
+	jQuery( "."+pseudoSelectClass+"" ).sortable({
+	  update: function( event, ui ) {
+		wcuSelectSortableCreateOptions(pseudoSelectClass, pseudoSelectDiv, select, name, pseudoSelect);
+	  }
+	});
+
+	jQuery( "."+pseudoSelectClass+"" ).disableSelection();
+
+	jQuery("."+pseudoSelectDiv+"").click(function(e){
+		var checkbox = jQuery(this).find("."+pseudoSelectDiv+"Checkbox");
+		checkbox.prop("checked", !checkbox.prop("checked"));
+		 if (jQuery(this).find(".icheckbox_minimal").hasClass("checked")) {
+			 jQuery(this).find(".icheckbox_minimal").removeClass("checked");
+		 } else {
+			 jQuery(this).find(".icheckbox_minimal").addClass("checked");
+		 };
+
+		wcuSelectSortableCreateOptions(pseudoSelectClass, pseudoSelectDiv, select, name, pseudoSelect);
+	});
+
+	jQuery("."+pseudoSelectDiv+"Checkbox").click(function(e){
+		e.stopPropagation();
+		wcuSelectSortableCreateOptions(pseudoSelectClass, pseudoSelectDiv, select, name, pseudoSelect);
+	});
+
+}
+
+function wcuSelectSortableCreateOptions(pseudoSelectClass, pseudoSelectDiv, select, name, pseudoSelect) {
+	select.find("option").remove();
+	jQuery('body .'+pseudoSelectClass+'').find("."+pseudoSelectDiv+"").each(function(e){
+		var html = jQuery(this).text();
+		var val = jQuery(this).attr("data-value");
+		var checked = jQuery(this).find('input').is(":checked");
+		option = select.append("<option value='"+val+"' >"+html+"</option>");
+		if (checked) {
+			select.find('option').last().prop("selected", true);
+		}
+	});
+}
+
+// Hide random blocks by selected options
+jQuery("[name*='wcu_options[currency_switcher][design_tab][type]']").on("change", function(){
+		toggleType = jQuery(this).val();
+		toggleSwitcher = jQuery("[name*='wcu_options[currency_switcher][design_tab][toggle_switcher]']");
+
+		toggleSwitcherFullSize = jQuery("[name*='wcu_options[currency_switcher][design_tab][toggle_switcher]'][value='full_size']");
+		toggleSwitcherOnClick = jQuery("[name*='wcu_options[currency_switcher][design_tab][toggle_switcher]'][value='on_click']");
+		toggleSwitcherOnHover = jQuery("[name*='wcu_options[currency_switcher][design_tab][toggle_switcher]'][value='on_hover']");
+
+		switch (toggleType) {
+			case 'simple':
+				toggleSwitcherFullSize.parent().parent().show();
+				break;
+			case 'floating':
+				if ( toggleSwitcherFullSize.parent().hasClass("checked") ) {
+					toggleSwitcher.parent().removeClass("checked");
+					toggleSwitcherOnHover.prop("checked",true);
+					toggleSwitcherOnHover.parent().addClass("checked");
 				}
-				var selected = jQuery(this).prop("selected");
-				if (selected) {selected = 'checked';}
-				var option = jQuery("<div align='center' class='"+pseudoSelectDiv+" wcuSelectMultipleSortableDiv' data-value='"+val+"' data-text='"+html+"'><i class='fa fa-arrows-h' style='font-size: 20px; margin-top:5px;'></i><br><input class='"+pseudoSelectDiv+"Checkbox' "+ selected +" type='checkbox'>"+html+"</div>")
-
-				pseudoSelect.append(option);
-			});
-
-			jQuery( "."+pseudoSelectClass+"" ).sortable({
-			  update: function( event, ui ) {
-				wcuSelectSortableCreateOptions(pseudoSelectClass, pseudoSelectDiv, select, name, pseudoSelect);
-			  }
-			});
-
-			jQuery( "."+pseudoSelectClass+"" ).disableSelection();
-
-			jQuery("."+pseudoSelectDiv+"").click(function(e){
-				var checkbox = jQuery(this).find("."+pseudoSelectDiv+"Checkbox");
-				checkbox.prop("checked", !checkbox.prop("checked"));
-				 if (jQuery(this).find(".icheckbox_minimal").hasClass("checked")) {
-					 jQuery(this).find(".icheckbox_minimal").removeClass("checked");
-				 } else {
-					 jQuery(this).find(".icheckbox_minimal").addClass("checked");
-				 };
-
-				wcuSelectSortableCreateOptions(pseudoSelectClass, pseudoSelectDiv, select, name, pseudoSelect);
-			});
-
-			jQuery("."+pseudoSelectDiv+"Checkbox").click(function(e){
-				e.stopPropagation();
-				wcuSelectSortableCreateOptions(pseudoSelectClass, pseudoSelectDiv, select, name, pseudoSelect);
-			});
-
+				toggleSwitcherFullSize.parent().parent().hide();
+				break;
+			case 'rotating':
+				if ( toggleSwitcherFullSize.parent().hasClass("checked") ) {
+					toggleSwitcher.parent().removeClass("checked");
+					toggleSwitcherOnHover.prop("checked",true);
+					toggleSwitcherOnHover.parent().addClass("checked");
+				}
+				toggleSwitcherFullSize.parent().parent().hide();
+				break;
 		}
 
-		function wcuSelectSortableCreateOptions(pseudoSelectClass, pseudoSelectDiv, select, name, pseudoSelect) {
-			select.find("option").remove();
-			jQuery('body .'+pseudoSelectClass+'').find("."+pseudoSelectDiv+"").each(function(e){
-				var html = jQuery(this).text();
-				var val = jQuery(this).attr("data-value");
-				var checked = jQuery(this).find('input').is(":checked");
-				option = select.append("<option value='"+val+"' >"+html+"</option>");
-				if (checked) {
-					select.find('option').last().prop("selected", true);
-				}
-			});
-		}
-
-		// Hide random blocks by selected options
-		jQuery("[name*='wcu_options[currency_switcher][design_tab][type]']").on("change", function(){
-				toggleType = jQuery(this).val();
-				toggleSwitcher = jQuery("[name*='wcu_options[currency_switcher][design_tab][toggle_switcher]']");
-
-				toggleSwitcherFullSize = jQuery("[name*='wcu_options[currency_switcher][design_tab][toggle_switcher]'][value='full_size']");
-				toggleSwitcherOnClick = jQuery("[name*='wcu_options[currency_switcher][design_tab][toggle_switcher]'][value='on_click']");
-				toggleSwitcherOnHover = jQuery("[name*='wcu_options[currency_switcher][design_tab][toggle_switcher]'][value='on_hover']");
-
-				switch (toggleType) {
-				  case 'simple':
-					 toggleSwitcherFullSize.parent().parent().show();
-				    break;
-				  case 'floating':
-						if ( toggleSwitcherFullSize.parent().hasClass("checked") ) {
-						  toggleSwitcher.parent().removeClass("checked");
-						  toggleSwitcherOnHover.prop("checked",true);
-						  toggleSwitcherOnHover.parent().addClass("checked");
-						}
-				  		toggleSwitcherFullSize.parent().parent().hide();
-				    break;
-				  case 'rotating':
-					  if ( toggleSwitcherFullSize.parent().hasClass("checked") ) {
-						toggleSwitcher.parent().removeClass("checked");
-						toggleSwitcherOnHover.prop("checked",true);
-						toggleSwitcherOnHover.parent().addClass("checked");
-					  }
-					  toggleSwitcherFullSize.parent().parent().hide();
-				    break;
-				}
-
-		});
+});
 
 // Toggle CurrencySwitcher open button options by Toggle Switcher checked
 jQuery(document).ready(function(){
