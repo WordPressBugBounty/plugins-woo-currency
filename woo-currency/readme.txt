@@ -2,7 +2,7 @@
 Contributors: woobewoo
 Tags: currency switcher, multi currency, currency converter, currency, woocommerce
 Tested up to: 6.9
-Stable tag: 2.2.9
+Stable tag: 2.3.0
 License: GNU General Public License v3.0
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -150,6 +150,11 @@ Please report security bugs found in the source code of the plugin through the [
 13. Admin panel. Custom Currencies
 
 == Changelog ==
+
+= 2.3.0 - 20/04/2026 =
+* Fix - Manual Prices - Variable products with disabled "Change currency at checkout" option bug.
+* Fix - Wrong currency display on thank-you page after changing currency.
+* WC tested up to: 10.7.
 
 = 2.2.9 - 13/04/2026 =
 * Fix - Variable product price conversion bug.
